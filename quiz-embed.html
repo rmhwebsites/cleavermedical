@@ -1,0 +1,30 @@
+<!-- ============================================
+     Cleaver Dermatology — Treatment Quiz Embed
+
+     Place this HTML Embed element on the Aesthetic Concierge page.
+     The CSS and JS files should be added via Project Settings > Custom Code,
+     or hosted externally and linked in the <head>.
+     ============================================ -->
+
+<!-- Quiz Container — the JS will render all steps inside this div -->
+<div id="treatment-quiz"></div>
+
+<!--
+  IMPORTANT: The hidden CMS Collection List below must be set up
+  natively in the Webflow Designer (NOT in this embed).
+
+  See SETUP.md for full instructions on creating the Collection List
+  with the required data attributes and class names.
+
+  The Collection List structure should be:
+
+  Collection List Wrapper  → class: tq-data-source
+    └── Collection Item    → class: tq-data-item
+        ├── data-name         = {Name}
+        ├── data-slug         = {Slug}
+        ├── data-area         = {Treatment Area}
+        ├── data-concerns     = {Concerns}
+        ├── data-downtime     = {Downtime}
+        ├── data-description  = {Short Description}
+        └── Image element     → bound to {Image} field
+-->
