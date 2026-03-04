@@ -129,34 +129,34 @@
 
   /* ---------- TREATMENT KNOWLEDGE BASE ---------- */
   var PROFILES = {
-    'xeomin':             { intensity: 3, budget: 4, speed: 8, maintenance: 6, expLevel: 2 },
-    'discoloration':      { intensity: 4, budget: 4, speed: 5, maintenance: 5, expLevel: 2 },
-    'sublative-radio-frequency': { intensity: 5, budget: 5, speed: 4, maintenance: 4, expLevel: 3 },
-    'photofacial':        { intensity: 3, budget: 4, speed: 6, maintenance: 5, expLevel: 2 },
-    'sciton-bbl':         { intensity: 4, budget: 6, speed: 6, maintenance: 5, expLevel: 3 },
-    'vivace-microneedling': { intensity: 5, budget: 6, speed: 5, maintenance: 5, expLevel: 3 },
-    'juvederm':           { intensity: 4, budget: 6, speed: 9, maintenance: 6, expLevel: 3 },
-    'hair-loss-and-rejuvenation': { intensity: 3, budget: 5, speed: 3, maintenance: 7, expLevel: 2 },
-    'kybella':            { intensity: 6, budget: 7, speed: 4, maintenance: 3, expLevel: 4 },
-    'belotero-balance':   { intensity: 3, budget: 5, speed: 9, maintenance: 6, expLevel: 2 },
-    'radiesse':           { intensity: 4, budget: 6, speed: 8, maintenance: 5, expLevel: 3 },
-    'co2re-laser':        { intensity: 9, budget: 8, speed: 5, maintenance: 3, expLevel: 5 },
-    'peels':              { intensity: 3, budget: 3, speed: 5, maintenance: 6, expLevel: 1 },
-    'sclerotherapy':      { intensity: 4, budget: 5, speed: 5, maintenance: 4, expLevel: 2 },
-    'facials':            { intensity: 1, budget: 2, speed: 7, maintenance: 8, expLevel: 1 },
-    'bioglow':            { intensity: 2, budget: 3, speed: 8, maintenance: 7, expLevel: 1 },
-    'microblading':       { intensity: 5, budget: 5, speed: 9, maintenance: 3, expLevel: 3 },
-    'oxy-trio-glow-facial': { intensity: 1, budget: 3, speed: 8, maintenance: 7, expLevel: 1 },
-    'carbon-glow-peel':   { intensity: 3, budget: 4, speed: 7, maintenance: 6, expLevel: 2 },
-    'bela-md-facial':     { intensity: 2, budget: 3, speed: 7, maintenance: 7, expLevel: 1 },
-    'fractional-resurfacing': { intensity: 7, budget: 7, speed: 5, maintenance: 4, expLevel: 4 },
-    'photofacials-ipl':   { intensity: 3, budget: 4, speed: 6, maintenance: 5, expLevel: 2 },
-    'tattoo-removal':     { intensity: 6, budget: 6, speed: 2, maintenance: 2, expLevel: 3 },
-    'coolsculpting':      { intensity: 4, budget: 7, speed: 4, maintenance: 3, expLevel: 2 },
-    'botox-fillers':      { intensity: 3, budget: 5, speed: 9, maintenance: 7, expLevel: 2 },
-    'microneedling':      { intensity: 4, budget: 4, speed: 5, maintenance: 5, expLevel: 2 },
-    'hydrafacial':        { intensity: 1, budget: 3, speed: 8, maintenance: 8, expLevel: 1 },
-    'laser-hair-removal': { intensity: 4, budget: 5, speed: 3, maintenance: 2, expLevel: 2 }
+    'xeomin':             { intensity: 3, budget: 4, speed: 8, maintenance: 6, expLevel: 2, type: 'Neuromodulator' },
+    'discoloration':      { intensity: 4, budget: 4, speed: 5, maintenance: 5, expLevel: 2, type: 'Topical' },
+    'sublative-radio-frequency': { intensity: 5, budget: 5, speed: 4, maintenance: 4, expLevel: 3, type: 'Radiofrequency' },
+    'photofacial':        { intensity: 3, budget: 4, speed: 6, maintenance: 5, expLevel: 2, type: 'Light Therapy' },
+    'sciton-bbl':         { intensity: 4, budget: 6, speed: 6, maintenance: 5, expLevel: 3, type: 'Light Therapy' },
+    'vivace-microneedling': { intensity: 5, budget: 6, speed: 5, maintenance: 5, expLevel: 3, type: 'RF Microneedling' },
+    'juvederm':           { intensity: 4, budget: 6, speed: 9, maintenance: 6, expLevel: 3, type: 'Dermal Filler' },
+    'hair-loss-and-rejuvenation': { intensity: 3, budget: 5, speed: 3, maintenance: 7, expLevel: 2, type: 'PRP Therapy' },
+    'kybella':            { intensity: 6, budget: 7, speed: 4, maintenance: 3, expLevel: 4, type: 'Injectable' },
+    'belotero-balance':   { intensity: 3, budget: 5, speed: 9, maintenance: 6, expLevel: 2, type: 'Dermal Filler' },
+    'radiesse':           { intensity: 4, budget: 6, speed: 8, maintenance: 5, expLevel: 3, type: 'Biostimulator' },
+    'co2re-laser':        { intensity: 9, budget: 8, speed: 5, maintenance: 3, expLevel: 5, type: 'CO2 Laser' },
+    'peels':              { intensity: 3, budget: 3, speed: 5, maintenance: 6, expLevel: 1, type: 'Chemical Peel' },
+    'sclerotherapy':      { intensity: 4, budget: 5, speed: 5, maintenance: 4, expLevel: 2, type: 'Sclerotherapy' },
+    'facials':            { intensity: 1, budget: 2, speed: 7, maintenance: 8, expLevel: 1, type: 'Facial' },
+    'bioglow':            { intensity: 2, budget: 3, speed: 8, maintenance: 7, expLevel: 1, type: 'Facial' },
+    'microblading':       { intensity: 5, budget: 5, speed: 9, maintenance: 3, expLevel: 3, type: 'Semi-Permanent' },
+    'oxy-trio-glow-facial': { intensity: 1, budget: 3, speed: 8, maintenance: 7, expLevel: 1, type: 'Oxygen Facial' },
+    'carbon-glow-peel':   { intensity: 3, budget: 4, speed: 7, maintenance: 6, expLevel: 2, type: 'Laser Peel' },
+    'bela-md-facial':     { intensity: 2, budget: 3, speed: 7, maintenance: 7, expLevel: 1, type: 'Medical Facial' },
+    'fractional-resurfacing': { intensity: 7, budget: 7, speed: 5, maintenance: 4, expLevel: 4, type: 'Fractional Laser' },
+    'photofacials-ipl':   { intensity: 3, budget: 4, speed: 6, maintenance: 5, expLevel: 2, type: 'IPL' },
+    'tattoo-removal':     { intensity: 6, budget: 6, speed: 2, maintenance: 2, expLevel: 3, type: 'Laser' },
+    'coolsculpting':      { intensity: 4, budget: 7, speed: 4, maintenance: 3, expLevel: 2, type: 'Cryolipolysis' },
+    'botox-fillers':      { intensity: 3, budget: 5, speed: 9, maintenance: 7, expLevel: 2, type: 'Neurotoxin + Filler' },
+    'microneedling':      { intensity: 4, budget: 4, speed: 5, maintenance: 5, expLevel: 2, type: 'Microneedling' },
+    'hydrafacial':        { intensity: 1, budget: 3, speed: 8, maintenance: 8, expLevel: 1, type: 'HydraFacial' },
+    'laser-hair-removal': { intensity: 4, budget: 5, speed: 3, maintenance: 2, expLevel: 2, type: 'Laser' }
   };
 
   /* ---------- STATE ---------- */
@@ -444,17 +444,18 @@
         var img = t.image || 'https://placehold.co/400x200/eff7fc/165b91?text=' + encodeURIComponent(t.name);
         /* Build unique badges for each card */
         var badges = [];
+        var profile = PROFILES[t.slug];
+        /* Treatment type badge (most unique) */
+        if (profile && profile.type) {
+          badges.push('<span class="badge">' + profile.type + '</span>');
+        }
         /* Downtime badge */
         badges.push('<span class="badge">' + (t.downtime || 'Minimal') + ' Downtime</span>');
-        /* Intensity badge from profile */
-        var profile = PROFILES[t.slug];
+        /* Results speed badge */
         if (profile) {
-          var intLabel = profile.intensity <= 3 ? 'Gentle' : profile.intensity <= 6 ? 'Moderate' : 'Intensive';
-          badges.push('<span class="badge">' + intLabel + '</span>');
+          var spdLabel = profile.speed >= 7 ? 'Quick Results' : profile.speed >= 4 ? 'Gradual Results' : 'Series Required';
+          badges.push('<span class="badge">' + spdLabel + '</span>');
         }
-        /* Area badge */
-        var areaLabel = (t.area || '').split(',')[0].trim();
-        if (areaLabel) badges.push('<span class="badge">' + areaLabel.charAt(0).toUpperCase() + areaLabel.slice(1) + '</span>');
         return '<div class="quiz-result-card">' +
           '<img class="quiz-result-image" src="' + img + '" alt="' + t.name + '" loading="lazy">' +
           '<div class="quiz-result-content">' +
