@@ -669,33 +669,15 @@
       timeline: a.timeline || ''
     };
     try {
-      /* Use hidden form + iframe to bypass CORS/redirect issues with Google Apps Script */
-      var iframe = document.createElement('iframe');
-      iframe.name = 'tq-submit-frame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-
-      var form = document.createElement('form');
-      form.method = 'POST';
-      form.action = WEBHOOK_URL;
-      form.target = 'tq-submit-frame';
-
-      Object.keys(fields).forEach(function (key) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = fields[key];
-        form.appendChild(input);
-      });
-
-      document.body.appendChild(form);
-      form.submit();
-
-      setTimeout(function () {
-        if (form.parentNode) form.parentNode.removeChild(form);
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 10000);
-    } catch (e) { /* silent fail */ }
+      /* Image beacon — most reliable cross-origin data submission.
+         Sends a GET request via <img> src. No CORS, no redirects, no iframes. */
+      var params = Object.keys(fields).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(fields[key]);
+      }).join('&');
+      var beacon = new Image();
+      beacon.src = WEBHOOK_URL + '?' + params;
+      console.log('[Quiz] Submission sent');
+    } catch (e) { console.log('[Quiz] Submission error:', e); }
   }
 
   /* ---------- LAUNCH ---------- */
