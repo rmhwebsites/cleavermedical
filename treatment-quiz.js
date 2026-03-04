@@ -58,7 +58,7 @@
     area: [
       { value: 'face', icon: 'face', label: 'Face', desc: 'Skin, wrinkles, tone, and texture' },
       { value: 'body', icon: 'body', label: 'Body', desc: 'Contouring, veins, and hair removal' },
-      { value: 'hair', icon: 'hair', label: 'Hair', desc: 'Hair loss and restoration' }
+      { value: 'hair', icon: 'hair', label: 'Hair', desc: 'Hair removal, loss, and restoration' }
     ],
     concern: {
       face: [
@@ -80,6 +80,7 @@
         { value: 'double-chin', icon: 'contouring', label: 'Double Chin', desc: 'Reduce submental fullness' }
       ],
       hair: [
+        { value: 'hair-removal', icon: 'body', label: 'Hair Removal', desc: 'Reduce unwanted hair with laser' },
         { value: 'hair-loss', icon: 'hair_loss', label: 'Hair Thinning', desc: 'Address gradual hair loss' },
         { value: 'hair-restoration', icon: 'hair', label: 'Hair Restoration', desc: 'Stimulate regrowth and fullness' }
       ]
@@ -277,6 +278,15 @@
       if (slug) window.location.href = '/aesthetic-treatments/' + slug;
     }
 
+    /* See More results */
+    var seeMore = e.target.closest('[data-quiz="see-more"]');
+    if (seeMore) {
+      var extras = root.querySelectorAll('[data-extra-result]');
+      extras.forEach(function (el) { el.style.display = ''; });
+      seeMore.parentElement.remove();
+      return;
+    }
+
     /* Restart */
     var restart = e.target.closest('[data-quiz="restart"]');
     if (restart) {
@@ -313,9 +323,16 @@
     if (optionKey === 'area') {
       var concerns = STEP_OPTIONS.concern[value] || [];
       populateGrid('concern', concerns);
-      populateGrid('secondary-concerns', concerns);
-      /* Track concern count so we can skip secondary if too few */
+      state._allConcerns = concerns;
       state._concernCount = concerns.length;
+    }
+
+    /* If primary concern selected, rebuild secondary without it */
+    if (optionKey === 'concern') {
+      var filtered = (state._allConcerns || []).filter(function (c) { return c.value !== value; });
+      populateGrid('secondary-concerns', filtered);
+      /* Update count for skip logic (secondary has one fewer option) */
+      state._secondaryCount = filtered.length;
     }
 
     /* Auto-advance after selection (slight delay for visual feedback) */
@@ -329,8 +346,8 @@
 
     if (state.step < 10) {
       state.step++;
-      /* Skip secondary concerns if only 2 or fewer options */
-      if (state.step === 3 && (state._concernCount || 0) <= 2) {
+      /* Skip secondary concerns if only 1 or fewer options after excluding primary */
+      if (state.step === 3 && (state._secondaryCount || 0) <= 1) {
         state.answers['secondary-concerns'] = [];
         state.step++;
       }
@@ -344,7 +361,7 @@
     if (state.step > 1) {
       state.step--;
       /* Skip secondary concerns going back too if it was skipped */
-      if (state.step === 3 && (state._concernCount || 0) <= 2) {
+      if (state.step === 3 && (state._secondaryCount || 0) <= 1) {
         state.step--;
       }
       updateUI();
@@ -441,7 +458,7 @@
         '</div>';
     } else {
       var maxScore = top[0].score;
-      resultsGrid.innerHTML = top.map(function (item, i) {
+      function buildCard(item, i) {
         var t = item.treatment;
         var matchPct = Math.round((item.score / maxScore) * 100);
         if (i === 0) matchPct = 100;
@@ -449,18 +466,14 @@
         /* Build unique badges for each card */
         var badges = [];
         var profile = PROFILES[t.slug];
-        /* Treatment type badge (most unique) */
-        if (profile && profile.type) {
-          badges.push('<span class="badge">' + profile.type + '</span>');
-        }
-        /* Downtime badge */
+        if (profile && profile.type) badges.push('<span class="badge">' + profile.type + '</span>');
         badges.push('<span class="badge">' + (t.downtime || 'Minimal') + ' Downtime</span>');
-        /* Results speed badge */
         if (profile) {
           var spdLabel = profile.speed >= 7 ? 'Quick Results' : profile.speed >= 4 ? 'Gradual Results' : 'Series Required';
           badges.push('<span class="badge">' + spdLabel + '</span>');
         }
-        return '<div class="quiz-result-card">' +
+        var hidden = i >= 3 ? ' style="display:none" data-extra-result' : '';
+        return '<div class="quiz-result-card"' + hidden + '>' +
           '<img class="quiz-result-image" src="' + img + '" alt="' + t.name + '" loading="lazy">' +
           '<div class="quiz-result-content">' +
             '<div class="quiz-match-badge">' + matchPct + '% Match</div>' +
@@ -470,7 +483,15 @@
             '<a data-action="learn-more" data-slug="' + t.slug + '" class="Button Primary Small">Learn More</a>' +
           '</div>' +
         '</div>';
-      }).join('');
+      }
+      resultsGrid.innerHTML = top.map(buildCard).join('');
+      /* Add "See More" button if there are extra results */
+      if (top.length > 3) {
+        var seeMoreDiv = document.createElement('div');
+        seeMoreDiv.style.cssText = 'text-align:center;margin-top:24px;grid-column:1/-1';
+        seeMoreDiv.innerHTML = '<button data-quiz="see-more" style="padding:12px 28px;background:transparent;border:2px solid #d4e4ef;border-radius:40px;font-size:15px;font-weight:600;color:#555;cursor:pointer;font-family:var(--tq-font);transition:all .3s ease">See More Recommendations</button>';
+        resultsGrid.appendChild(seeMoreDiv);
+      }
     }
 
     /* Submit quiz data to Google Sheets */
