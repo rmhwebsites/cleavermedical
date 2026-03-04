@@ -10,7 +10,7 @@
 
   /* ---------- GOOGLE SHEETS WEBHOOK ---------- */
   /* Paste your Google Apps Script web app URL below */
-  var WEBHOOK_URL = '';
+  var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbylW2EeG1RKynvWcljE3pQ9jWxMX8RV5wb03fswqG8x1vbcB9UYC4vTO79BYfixuhmymg/exec';
 
   /* ---------- SVG ICONS ---------- */
   var IC = {
