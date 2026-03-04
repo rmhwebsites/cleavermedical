@@ -8,6 +8,10 @@
 (function () {
   'use strict';
 
+  /* ---------- GOOGLE SHEETS WEBHOOK ---------- */
+  /* Paste your Google Apps Script web app URL below */
+  var WEBHOOK_URL = '';
+
   /* ---------- SVG ICONS ---------- */
   var IC = {
     face: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="8" ry="9"/><circle cx="9" cy="11" r=".8" fill="currentColor" stroke="none"/><circle cx="15" cy="11" r=".8" fill="currentColor" stroke="none"/><path d="M10 16c.8.7 1.5 1 2 1s1.2-.3 2-1"/></svg>',
@@ -469,6 +473,10 @@
       }).join('');
     }
 
+    /* Submit quiz data to Google Sheets */
+    var resultNames = top.map(function (item) { return item.treatment.name; });
+    submitQuizData(resultNames);
+
     /* Show results step */
     Object.keys(stepEls).forEach(function (key) {
       stepEls[key].classList.remove('quiz-step-active');
@@ -591,6 +599,35 @@
     }
 
     return Math.max(0, score);
+  }
+
+  /* ---------- DATA COLLECTION (Google Sheets) ---------- */
+  function submitQuizData(topResults) {
+    if (!WEBHOOK_URL) return;
+    var a = state.answers;
+    var payload = {
+      timestamp: new Date().toISOString(),
+      area: a.area || '',
+      concern: a.concern || '',
+      secondaryConcerns: (a['secondary-concerns'] || []).join(', '),
+      sensitivity: a.sensitivity || '',
+      experience: a.experience || '',
+      intensity: a.intensity || '',
+      downtime: a.downtime || '',
+      budget: a.budget || '',
+      timeline: a.timeline || '',
+      age: a.age || '',
+      topResult: topResults[0] || '',
+      allResults: topResults.join(', ')
+    };
+    try {
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) { /* silent fail */ }
   }
 
   /* ---------- LAUNCH ---------- */
