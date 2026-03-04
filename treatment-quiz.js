@@ -625,6 +625,16 @@
       score += 3;
     }
 
+    /* 6b. Penalize hair-restoration when user wants hair-removal */
+    if (a.concern === 'hair-removal') {
+      var isRestorationTreatment = concernTags.some(function (tag) {
+        return tag === 'hair-restoration' || tag === 'hair-loss' || tag === 'hair-thinning';
+      });
+      if (isRestorationTreatment) {
+        score = Math.min(score, 5); /* Cap at minimal score */
+      }
+    }
+
     /* 7. Age bonus */
     if (a.age && profile) {
       if (a.age === 'under-30' && profile.intensity <= 4) score += 3;
