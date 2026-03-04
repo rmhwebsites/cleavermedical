@@ -485,12 +485,22 @@
     var areas = (t.area || '').split(',').map(function (s) { return s.trim().toLowerCase(); });
     if (a.area && areas.indexOf(a.area) < 0) return 0;
 
-    /* 2. Primary concern match (heavy weight: 30pts) */
+    /* 2. Primary concern match — exact match heavily prioritized */
     var concerns = (t.concerns || '').toLowerCase();
+    var concernTags = concerns.split(',').map(function (s) { return s.trim(); });
     if (a.concern) {
-      var primaryTerms = a.concern.split('-');
-      var primaryMatch = primaryTerms.some(function (term) { return concerns.indexOf(term) >= 0; });
-      if (primaryMatch) score += 30;
+      /* Exact tag match (e.g. "tattoo-removal" is a tag) → strong bonus */
+      var exactMatch = concernTags.indexOf(a.concern) >= 0;
+      if (exactMatch) {
+        score += 45;
+      } else {
+        /* Partial: any term from the concern appears in tags */
+        var primaryTerms = a.concern.split('-');
+        var partialMatch = primaryTerms.some(function (term) {
+          return term.length > 2 && concerns.indexOf(term) >= 0;
+        });
+        if (partialMatch) score += 15;
+      }
     }
 
     /* 3. Secondary concerns (18pts total) */

@@ -190,45 +190,47 @@
   gap: 12px;
 }
 
-/* Base style for both nav buttons */
-.quiz-nav-row [data-quiz="back"],
-.quiz-nav-row [data-quiz="next"] {
-  padding: 12px 28px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: var(--tq-pill);
+/* Base style for both nav buttons — high specificity to override .w-button */
+#treatment-quiz .quiz-nav-row [data-quiz="back"],
+#treatment-quiz .quiz-nav-row [data-quiz="next"] {
+  padding: 12px 28px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  border-radius: var(--tq-pill) !important;
   cursor: pointer;
   transition: all var(--tq-ease);
-  font-family: var(--tq-font);
-  text-decoration: none;
-  display: inline-flex;
+  font-family: var(--tq-font) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   min-width: 120px;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
 }
 
 /* Back button (outline style) */
-.quiz-nav-row [data-quiz="back"] {
-  background: transparent;
-  border: 2px solid var(--tq-border);
-  color: var(--tq-muted);
+#treatment-quiz .quiz-nav-row [data-quiz="back"] {
+  background: transparent !important;
+  border: 2px solid var(--tq-border) !important;
+  color: var(--tq-muted) !important;
 }
 
-.quiz-nav-row [data-quiz="back"]:hover {
-  border-color: var(--tq-primary);
-  color: var(--tq-primary);
+#treatment-quiz .quiz-nav-row [data-quiz="back"]:hover {
+  border-color: var(--tq-primary) !important;
+  color: var(--tq-primary) !important;
 }
 
 /* Next button (primary style) */
-.quiz-nav-row [data-quiz="next"] {
-  background: var(--tq-primary);
-  color: var(--tq-white);
-  border: 2px solid var(--tq-primary);
+#treatment-quiz .quiz-nav-row [data-quiz="next"] {
+  background: var(--tq-primary) !important;
+  color: var(--tq-white) !important;
+  border: 2px solid var(--tq-primary) !important;
 }
 
-.quiz-nav-row [data-quiz="next"]:hover {
-  background: var(--tq-hover);
-  border-color: var(--tq-hover);
+#treatment-quiz .quiz-nav-row [data-quiz="next"]:hover {
+  background: var(--tq-hover) !important;
+  border-color: var(--tq-hover) !important;
 }
 
 /* ---------- Results Section ---------- */
