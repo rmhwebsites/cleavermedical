@@ -291,6 +291,8 @@
       var vals = [];
       selected.forEach(function (s) { vals.push(s.getAttribute('data-value')); });
       state.answers['secondary-concerns'] = vals;
+      /* Update button text based on selection */
+      if (nextBtn) nextBtn.textContent = vals.length > 0 ? 'Next' : 'Skip';
       return;
     }
 
@@ -361,12 +363,12 @@
     var stepKey = getStepOptionKey(state.step);
     if (nextBtn) {
       if (stepKey === 'secondary-concerns') {
-        nextBtn.textContent = 'Skip';
-        nextBtn.style.display = '';
+        var secVals = state.answers['secondary-concerns'] || [];
+        nextBtn.textContent = secVals.length > 0 ? 'Next' : 'Skip';
       } else {
         nextBtn.textContent = 'Next';
-        nextBtn.style.display = 'none'; /* Auto-advance handles it */
       }
+      nextBtn.style.display = '';
     }
 
     /* Show nav row for quiz, hide for results */
