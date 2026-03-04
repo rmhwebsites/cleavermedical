@@ -39,7 +39,10 @@
     clock_min: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
     clock_mod: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-4 2"/></svg>',
     clock_ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5"/><path d="M16 16l-4-4"/></svg>',
-    budget: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2v20M6 6h9a3 3 0 010 6H6M8 12h8a3 3 0 010 6H6"/></svg>',
+    budget_1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><text x="12" y="16" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">$</text></svg>',
+    budget_2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><text x="12" y="16" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">$$</text></svg>',
+    budget_3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><text x="12" y="16" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor" stroke="none">$$$</text></svg>',
+    budget_4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor" stroke="none">$$$$</text></svg>',
     fast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     gradual: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 20l6-6 4 4 8-10"/></svg>',
     longterm: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 2v4M16 2v4"/></svg>',
@@ -99,10 +102,10 @@
       { value: 'extended', icon: 'clock_ext', label: 'Extended (1+ week)', desc: "I'm committed and can take time off" }
     ],
     budget: [
-      { value: 'budget', icon: 'budget', label: 'Budget-Friendly', desc: 'Under $300 per session' },
-      { value: 'mid', icon: 'budget', label: 'Mid-Range', desc: '$300 - $800 per session' },
-      { value: 'premium', icon: 'budget', label: 'Premium', desc: '$800 - $2,000 per session' },
-      { value: 'no-limit', icon: 'budget', label: 'Best Available', desc: 'Investment is flexible for best results' }
+      { value: 'budget', icon: 'budget_1', label: 'Budget-Friendly', desc: 'Under $300 per session' },
+      { value: 'mid', icon: 'budget_2', label: 'Mid-Range', desc: '$300 - $800 per session' },
+      { value: 'premium', icon: 'budget_3', label: 'Premium', desc: '$800 - $2,000 per session' },
+      { value: 'no-limit', icon: 'budget_4', label: 'Best Available', desc: 'Investment is flexible for best results' }
     ],
     timeline: [
       { value: 'immediate', icon: 'fast', label: 'Immediate Results', desc: 'I want to see a difference right away' },
