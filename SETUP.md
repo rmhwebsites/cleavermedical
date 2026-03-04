@@ -2,12 +2,12 @@
 
 ## Overview
 
-The Treatment Quiz is a Webflow-native 10-step interactive concierge that recommends aesthetic treatments based on user preferences. The UI is built entirely with native Webflow elements in the Designer, with minimal JavaScript for interactivity and multi-factor scoring. CMS data is read from a hidden Collection List on the page, so recommendations stay in sync automatically.
+The Treatment Quiz is a Webflow-native 10-step interactive concierge that recommends aesthetic treatments based on user preferences. The UI is built entirely with native Webflow elements in the Designer, with JavaScript for interactivity and multi-factor scoring. CMS data is read from a hidden Collection List on the page (with a JSON fallback), so recommendations stay in sync automatically.
 
 **Quiz Flow (10 Steps):**
 1. Treatment Area (Face / Body / Hair)
 2. Primary Concern (dynamic based on area)
-3. Secondary Concerns (multi-select)
+3. Secondary Concerns (multi-select, excludes primary)
 4. Skin Sensitivity
 5. Treatment Experience
 6. Treatment Intensity
@@ -16,7 +16,7 @@ The Treatment Quiz is a Webflow-native 10-step interactive concierge that recomm
 9. Results Timeline
 10. Age Range
 
-Then: Scored & ranked treatment results with match percentages.
+Then: Top 3 scored & ranked results with match percentages, expandable to show all.
 
 ---
 
@@ -35,20 +35,23 @@ The quiz UI is built with real Webflow elements in the Designer — not generate
 | `data-quiz="back"` | Back button |
 | `data-quiz="next"` | Next button |
 | `data-quiz="results-grid"` | Results card container |
+| `data-quiz="restart"` | Restart quiz button |
+| `data-quiz="see-more"` | Expand hidden results button |
 | `data-step="1"` through `"10"` | Step containers |
 | `data-step="results"` | Results step container |
 | `data-options="area"` | Option grid for each step |
 
 ### JavaScript Role
-The JS (`treatment-quiz.js`) only handles:
-- Populating option cards with icons and labels inside the `data-options` grids
+The JS (`treatment-quiz.js`) handles:
+- Populating option cards with SVG icons and labels inside the `data-options` grids
 - Show/hide step transitions via `quiz-step-active` class
 - Click handling and answer state management
-- Multi-factor scoring algorithm using treatment knowledge base
-- Rendering result cards in the results grid
+- Multi-factor scoring algorithm using 28 treatment profiles
+- Rendering result cards (top 3 + expandable) with match percentages and badges
+- Google Sheets webhook data submission
 
 ### CMS Data
-A hidden Collection List (`.tq-data-source`) provides treatment data via `data-*` attributes on each item. The JS reads these on page load.
+A hidden Collection List (`.tq-data-source`) provides treatment data via `data-*` attributes on each item. The JS reads these on page load. If the list is absent, falls back to `treatment-data.js` JSON.
 
 ---
 
@@ -56,11 +59,13 @@ A hidden Collection List (`.tq-data-source`) provides treatment data via `data-*
 
 | File | Purpose |
 |------|---------|
-| `treatment-quiz.css` | Supplemental styles for dynamic elements (option cards, results) |
-| `treatment-quiz.js` | Quiz engine v3.0 — interactivity, scoring, results rendering |
-| `treatment-data.js` | Fallback treatment data (JSON) if CMS list unavailable |
+| `treatment-quiz.css` | Supplemental styles for dynamic elements (option cards, results, responsive) |
+| `treatment-quiz.js` | Quiz engine — interactivity, scoring, results rendering, data collection |
+| `treatment-data.js` | Fallback treatment data (28 treatments as JSON array) |
+| `quiz-embed.html` | HTML embed snippet for the page |
 | `SETUP.md` | This file — setup and architecture docs |
 | `PROGRESS.md` | Build progress tracker |
+| `README.md` | Project documentation |
 
 ---
 
@@ -69,19 +74,27 @@ A hidden Collection List (`.tq-data-source`) provides treatment data via `data-*
 ### CDN URLs (jsDelivr from GitHub)
 - **CSS:** `https://cdn.jsdelivr.net/gh/rmhwebsites/cleavermedical@main/treatment-quiz.css`
 - **JS:** `https://cdn.jsdelivr.net/gh/rmhwebsites/cleavermedical@main/treatment-quiz.js`
+- **Data:** `https://cdn.jsdelivr.net/gh/rmhwebsites/cleavermedical@main/treatment-data.js`
+
+For cache-busted URLs, replace `@main` with a specific commit SHA (e.g., `@58f64ef`).
 
 ### Webflow Scripts (Applied to Aesthetic Concierge Page)
-Three scripts are registered via the Webflow MCP Scripts API:
+Four scripts registered via the Webflow Scripts API:
 
-1. **Quiz Dynamic Styles** (header) — Inline CSS for dynamically generated elements
+1. **Quiz Dynamic Styles** (header) — Inline CSS for dynamic elements
 2. **Quiz CSS Loader** (header) — Loads `treatment-quiz.css` from jsDelivr
-3. **Quiz JS Loader** (footer) — Loads `treatment-quiz.js` from jsDelivr
+3. **Quiz Data Loader** (header) — Loads `treatment-data.js` from jsDelivr
+4. **Quiz JS Loader** (footer) — Loads `treatment-quiz.js` from jsDelivr
 
 To update after code changes:
 ```bash
 git add . && git commit -m "Update quiz" && git push
 ```
-Then purge jsDelivr cache: `https://purge.jsdelivr.net/gh/rmhwebsites/cleavermedical@main/treatment-quiz.js`
+Then purge jsDelivr cache:
+```
+https://purge.jsdelivr.net/gh/rmhwebsites/cleavermedical@main/treatment-quiz.js
+https://purge.jsdelivr.net/gh/rmhwebsites/cleavermedical@main/treatment-quiz.css
+```
 
 ---
 
@@ -108,17 +121,18 @@ On the **Aesthetic Concierge** page in the Webflow Designer:
 6. **Increase item limit** to **100** (Settings panel on the Collection List Wrapper)
 7. The wrapper is hidden by CSS (`display: none !important`) so it won't appear on the published page
 
+> **Note:** If the CMS Collection List is not set up, the quiz falls back to the `treatment-data.js` JSON file loaded via CDN.
+
 ---
 
 ## Multi-Factor Scoring
 
-The quiz uses a weighted scoring system:
-
-| Factor | Weight | Description |
+| Factor | Points | Description |
 |--------|--------|-------------|
 | Area match | Required | Treatment must match selected area (face/body/hair) |
-| Primary concern | 30 pts | Keyword matching against treatment concern tags |
-| Secondary concerns | 18 pts | Up to 3 additional concern matches (6 pts each) |
+| Primary concern (exact) | 45 pts | Exact tag match against treatment concern tags |
+| Primary concern (partial) | 15 pts | Partial term match as fallback |
+| Secondary concerns | 18 pts max | Up to 3 additional concern matches (6 pts each) |
 | Downtime tolerance | 12 pts | Treatment downtime vs. user preference |
 | Intensity match | 10 pts | Treatment intensity vs. user preference |
 | Budget match | 8 pts | Treatment cost tier vs. user budget |
@@ -127,7 +141,23 @@ The quiz uses a weighted scoring system:
 | Sensitivity modifier | -8 to +3 | Adjusts for sensitive skin |
 | Age bonus | +2 to +3 | Age-appropriate treatment boost |
 
-Top 6 results are displayed with match percentages.
+Top 3 results displayed by default, with "See More Recommendations" button to reveal the rest.
+
+---
+
+## Google Sheets Data Collection
+
+Quiz submissions can be sent to a Google Sheet via webhook. Setup:
+
+1. Create a new Google Sheet
+2. Open Extensions > Apps Script
+3. Paste the Apps Script doPost handler (creates headers on first run, appends rows)
+4. Deploy as Web App (Execute as: Me, Access: Anyone)
+5. Copy the deployment URL
+6. Set `WEBHOOK_URL` in `treatment-quiz.js` to the deployment URL
+7. Push and purge CDN cache
+
+Collected fields: timestamp, area, concern, secondary concerns, sensitivity, experience, intensity, downtime, budget, timeline, age, top result, all results.
 
 ---
 
@@ -147,9 +177,10 @@ Top 6 results are displayed with match percentages.
 | Issue | Fix |
 |-------|-----|
 | Quiz doesn't load | Check browser console for JS errors. Verify the Quiz JS Loader script is applied to the page |
-| No treatments in results | CMS Collection List missing. Add hidden `.tq-data-source` list with `.tq-data-item` items |
+| No treatments in results | CMS Collection List missing and JSON fallback not loading. Check data loader script |
 | Only 5 treatments appear | Increase Collection List item limit to 100 in Webflow |
-| No concerns for an area | Check `treatment-area` field in CMS entries (should be comma-separated: face, body, hair) |
-| Wrong results | Check `concerns` field tags in CMS match the quiz concern values |
+| No concerns for an area | Check `treatment-area` field in CMS entries (comma-separated: face, body, hair) |
+| Wrong results ranking | Verify `concerns` field tags in CMS match the quiz concern values exactly |
 | Styles look wrong | Verify Quiz Dynamic Styles and Quiz CSS Loader scripts are applied in header |
 | CDN serving old version | Purge jsDelivr cache (see Hosting section above) |
+| No data in Google Sheets | Check WEBHOOK_URL is set, Apps Script is deployed, and CORS mode is 'no-cors' |

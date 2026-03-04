@@ -201,6 +201,13 @@
       });
     }
 
+    /* Runtime fixup: ensure laser hair removal is available under hair area */
+    state.treatments.forEach(function (t) {
+      if (t.slug === 'laser-hair-removal' && t.area.indexOf('hair') < 0) {
+        t.area = t.area + ', hair';
+      }
+    });
+
     /* Cache DOM elements */
     progressFill = root.querySelector('[data-quiz="progress-fill"]');
     stepLabel = root.querySelector('[data-quiz="step-label"]');
