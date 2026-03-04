@@ -538,32 +538,38 @@
     var areas = (t.area || '').split(',').map(function (s) { return s.trim().toLowerCase(); });
     if (a.area && areas.indexOf(a.area) < 0) return 0;
 
-    /* 2. Primary concern match — exact match heavily prioritized */
+    /* 2. Primary concern match — exact tag match required to prevent cross-contamination */
     var concerns = (t.concerns || '').toLowerCase();
     var concernTags = concerns.split(',').map(function (s) { return s.trim(); });
     if (a.concern) {
-      /* Exact tag match (e.g. "tattoo-removal" is a tag) → strong bonus */
+      /* Exact tag match (e.g. "hair-removal" must match tag "hair-removal", not "hair-restoration") */
       var exactMatch = concernTags.indexOf(a.concern) >= 0;
       if (exactMatch) {
         score += 45;
       } else {
-        /* Partial: any term from the concern appears in tags */
-        var primaryTerms = a.concern.split('-');
-        var partialMatch = primaryTerms.some(function (term) {
-          return term.length > 2 && concerns.indexOf(term) >= 0;
+        /* Check if any tag is a substring match but ONLY for non-ambiguous terms */
+        /* e.g. "wrinkles" in "fine-lines-wrinkles" is fine, but "hair" alone is too ambiguous */
+        var fullConcern = a.concern;
+        var partialMatch = concernTags.some(function (tag) {
+          /* Tag contains the full concern slug or concern contains the full tag */
+          return tag.indexOf(fullConcern) >= 0 || fullConcern.indexOf(tag) >= 0;
         });
         if (partialMatch) score += 15;
       }
     }
 
-    /* 3. Secondary concerns (18pts total) */
+    /* 3. Secondary concerns (18pts total) — use full slug matching */
     if (a['secondary-concerns'] && a['secondary-concerns'].length) {
       var secMatches = 0;
       a['secondary-concerns'].forEach(function (sc) {
-        var terms = sc.split('-');
-        if (terms.some(function (term) { return concerns.indexOf(term) >= 0; })) secMatches++;
+        var secExact = concernTags.indexOf(sc) >= 0;
+        var secPartial = !secExact && concernTags.some(function (tag) {
+          return tag.indexOf(sc) >= 0 || sc.indexOf(tag) >= 0;
+        });
+        if (secExact) secMatches += 1;
+        else if (secPartial) secMatches += 0.5;
       });
-      score += Math.min(secMatches * 6, 18);
+      score += Math.min(Math.round(secMatches * 6), 18);
     }
 
     /* 4. Downtime tolerance (12pts) */
@@ -635,24 +641,28 @@
     var a = state.answers;
     var payload = {
       timestamp: new Date().toISOString(),
-      area: a.area || '',
-      concern: a.concern || '',
-      secondaryConcerns: (a['secondary-concerns'] || []).join(', '),
+      treatment_area: a.area || '',
+      primary_concern: a.concern || '',
+      age_range: a.age || '',
+      budget: a.budget || '',
+      downtime: a.downtime || '',
+      recommended_treatment: topResults[0] || '',
+      match_score: '',
+      all_results: topResults.join(', '),
+      quiz_duration: '',
+      user_agent: navigator.userAgent || '',
+      referrer: document.referrer || '',
+      secondary_concerns: (a['secondary-concerns'] || []).join(', '),
       sensitivity: a.sensitivity || '',
       experience: a.experience || '',
       intensity: a.intensity || '',
-      downtime: a.downtime || '',
-      budget: a.budget || '',
-      timeline: a.timeline || '',
-      age: a.age || '',
-      topResult: topResults[0] || '',
-      allResults: topResults.join(', ')
+      timeline: a.timeline || ''
     };
     try {
       fetch(WEBHOOK_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
     } catch (e) { /* silent fail */ }
