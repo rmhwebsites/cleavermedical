@@ -27,6 +27,7 @@
     hair_loss: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22v-8"/><path d="M8 22v-5"/><path d="M16 22v-5"/><path d="M5 10c0-5 3-8 7-8s7 3 7 8"/><path d="M9 8l3-3 3 3" opacity=".5"/></svg>',
     veins: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 20c3-4 5-8 5-12"/><path d="M9 8c2 4 4 8 7 12"/><path d="M12 14c2-3 4-6 8-8"/></svg>',
     contouring: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 20l4-8 4 4 4-6 4 10"/></svg>',
+    double_chin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="11" rx="7" ry="8"/><path d="M7 16c1.5 3 3.5 4 5 4s3.5-1 5-4" opacity=".5"/></svg>',
     glow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M16.9 16.9l2.1 2.1M4.9 19.1l2.1-2.1M16.9 7.1l2.1-2.1"/></svg>',
     brows: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 11c2-3 5-4 8-2"/><path d="M21 11c-2-3-5-4-8-2"/></svg>',
     tattoo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 3l1 4-3 2 4 1-1 4 3-2-1 4"/><circle cx="12" cy="12" r="9"/></svg>',
@@ -77,7 +78,7 @@
         { value: 'spider-veins', icon: 'veins', label: 'Spider Veins', desc: 'Minimize visible leg veins' },
         { value: 'hair-removal', icon: 'body', label: 'Hair Removal', desc: 'Reduce unwanted body hair' },
         { value: 'tattoo-removal', icon: 'tattoo', label: 'Tattoo Removal', desc: 'Fade or remove unwanted tattoos' },
-        { value: 'double-chin', icon: 'contouring', label: 'Double Chin', desc: 'Reduce submental fullness' }
+        { value: 'double-chin', icon: 'double_chin', label: 'Double Chin', desc: 'Reduce submental fullness' }
       ],
       hair: [
         { value: 'hair-removal', icon: 'body', label: 'Hair Removal', desc: 'Reduce unwanted hair with laser' },
@@ -353,8 +354,8 @@
 
     if (state.step < 10) {
       state.step++;
-      /* Skip secondary concerns if only 1 or fewer options after excluding primary */
-      if (state.step === 3 && (state._secondaryCount || 0) <= 1) {
+      /* Skip secondary concerns if only 1 or fewer options, or if Hair category */
+      if (state.step === 3 && ((state._secondaryCount || 0) <= 1 || state.answers.area === 'hair')) {
         state.answers['secondary-concerns'] = [];
         state.step++;
       }
@@ -368,7 +369,7 @@
     if (state.step > 1) {
       state.step--;
       /* Skip secondary concerns going back too if it was skipped */
-      if (state.step === 3 && (state._secondaryCount || 0) <= 1) {
+      if (state.step === 3 && ((state._secondaryCount || 0) <= 1 || state.answers.area === 'hair')) {
         state.step--;
       }
       updateUI();
