@@ -190,27 +190,42 @@
       this.render();
     }
 
-    /* ---- Parse CMS data from hidden Collection List ---- */
+    /* ---- Parse treatment data ----
+       Priority: 1) Hidden CMS Collection List  2) window.__QUIZ_TREATMENTS JSON
+       ---------------------------------------------------------------- */
     parseTreatments() {
       const source = document.querySelector('.tq-data-source');
-      if (!source) {
-        console.warn('Aesthetic Concierge: No .tq-data-source element found.');
+      if (source) {
+        const items = source.querySelectorAll('.tq-data-item');
+        this.treatments = Array.from(items).map(el => {
+          const img = el.querySelector('img');
+          return {
+            name: (el.getAttribute('data-name') || '').trim(),
+            slug: (el.getAttribute('data-slug') || '').trim(),
+            areas: (el.getAttribute('data-area') || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+            concerns: (el.getAttribute('data-concerns') || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+            downtime: (el.getAttribute('data-downtime') || '').trim(),
+            description: (el.getAttribute('data-description') || '').trim(),
+            image: img ? img.getAttribute('src') : '',
+          };
+        });
         return;
       }
 
-      const items = source.querySelectorAll('.tq-data-item');
-      this.treatments = Array.from(items).map(el => {
-        const img = el.querySelector('img');
-        return {
-          name: (el.getAttribute('data-name') || '').trim(),
-          slug: (el.getAttribute('data-slug') || '').trim(),
-          areas: (el.getAttribute('data-area') || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
-          concerns: (el.getAttribute('data-concerns') || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
-          downtime: (el.getAttribute('data-downtime') || '').trim(),
-          description: (el.getAttribute('data-description') || '').trim(),
-          image: img ? img.getAttribute('src') : '',
-        };
-      });
+      if (window.__QUIZ_TREATMENTS && Array.isArray(window.__QUIZ_TREATMENTS)) {
+        this.treatments = window.__QUIZ_TREATMENTS.map(t => ({
+          name: (t.name || '').trim(),
+          slug: (t.slug || '').trim(),
+          areas: (t.area || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+          concerns: (t.concerns || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+          downtime: (t.downtime || '').trim(),
+          description: (t.description || '').trim(),
+          image: t.image || '',
+        }));
+        return;
+      }
+
+      console.warn('Aesthetic Concierge: No treatment data found.');
     }
 
     /* ---- Dynamically build concern groups for the selected area ----
