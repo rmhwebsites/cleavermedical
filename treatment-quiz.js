@@ -649,7 +649,7 @@
   function submitQuizData(topResults) {
     if (!WEBHOOK_URL) return;
     var a = state.answers;
-    var payload = {
+    var fields = {
       timestamp: new Date().toISOString(),
       treatment_area: a.area || '',
       primary_concern: a.concern || '',
@@ -669,12 +669,32 @@
       timeline: a.timeline || ''
     };
     try {
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
+      /* Use hidden form + iframe to bypass CORS/redirect issues with Google Apps Script */
+      var iframe = document.createElement('iframe');
+      iframe.name = 'tq-submit-frame';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = WEBHOOK_URL;
+      form.target = 'tq-submit-frame';
+
+      Object.keys(fields).forEach(function (key) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = fields[key];
+        form.appendChild(input);
       });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(function () {
+        if (form.parentNode) form.parentNode.removeChild(form);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }, 10000);
     } catch (e) { /* silent fail */ }
   }
 
