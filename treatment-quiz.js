@@ -442,13 +442,26 @@
         var matchPct = Math.round((item.score / maxScore) * 100);
         if (i === 0) matchPct = 100;
         var img = t.image || 'https://placehold.co/400x200/eff7fc/165b91?text=' + encodeURIComponent(t.name);
+        /* Build unique badges for each card */
+        var badges = [];
+        /* Downtime badge */
+        badges.push('<span class="badge">' + (t.downtime || 'Minimal') + ' Downtime</span>');
+        /* Intensity badge from profile */
+        var profile = PROFILES[t.slug];
+        if (profile) {
+          var intLabel = profile.intensity <= 3 ? 'Gentle' : profile.intensity <= 6 ? 'Moderate' : 'Intensive';
+          badges.push('<span class="badge">' + intLabel + '</span>');
+        }
+        /* Area badge */
+        var areaLabel = (t.area || '').split(',')[0].trim();
+        if (areaLabel) badges.push('<span class="badge">' + areaLabel.charAt(0).toUpperCase() + areaLabel.slice(1) + '</span>');
         return '<div class="quiz-result-card">' +
           '<img class="quiz-result-image" src="' + img + '" alt="' + t.name + '" loading="lazy">' +
           '<div class="quiz-result-content">' +
             '<div class="quiz-match-badge">' + matchPct + '% Match</div>' +
             '<h4 class="heading-style-h6" style="color:#165b91;margin:0 0 8px">' + t.name + '</h4>' +
             '<p class="text-size-small" style="color:#555;margin:0 0 12px;line-height:1.5">' + (t.description || '') + '</p>' +
-            '<div style="margin-top:auto;margin-bottom:12px"><span class="badge">' + (t.downtime || 'Minimal') + ' Downtime</span></div>' +
+            '<div style="margin-top:auto;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px">' + badges.join('') + '</div>' +
             '<a data-action="learn-more" data-slug="' + t.slug + '" class="Button Primary Small">Learn More</a>' +
           '</div>' +
         '</div>';
