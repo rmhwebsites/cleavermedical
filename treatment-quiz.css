@@ -1,6 +1,7 @@
 /* ============================================
-   Cleaver Dermatology — Treatment Quiz Styles v3.1
+   Cleaver Dermatology — Treatment Quiz Styles v3.2
    Uses quiz-* class names matching Webflow + JS
+   Spacing: margin-bottom approach
    ============================================ */
 
 /* ---------- CSS Variables (Cleaver Brand) ---------- */
@@ -28,16 +29,22 @@
 /* ---------- Hide Utility ---------- */
 .hide { display: none !important; }
 
-/* ---------- Section Spacing Fix ---------- */
+/* ---------- Section Spacing ---------- */
 #ac-quiz-section {
   padding-top: 0 !important;
 }
 
+/* ---------- Intro Section Spacing ---------- */
+#ac-quiz-section + .section_cta19,
+.section_cta19 {
+  margin-top: 0;
+}
+
 /* ---------- Quiz Container ---------- */
 #treatment-quiz {
-  max-width: 860px;
+  max-width: 80rem;
   margin: 0 auto;
-  padding: 20px 24px;
+  padding: 0 24px 24px;
   font-family: var(--tq-font);
   color: var(--tq-text);
 }
@@ -87,14 +94,15 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- Step Text (targets Webflow heading classes inside steps) ---------- */
+/* ---------- Step Headings (Webflow uses heading-style-h5 + text-size-regular) ---------- */
 .quiz-step h3,
 .quiz-question {
   font-size: 28px;
   font-weight: 600;
   color: var(--tq-primary);
   text-align: center;
-  margin: 0 0 8px;
+  margin-top: 0;
+  margin-bottom: 12px;
   line-height: 1.3;
 }
 
@@ -103,7 +111,8 @@
   font-size: 16px;
   color: var(--tq-muted);
   text-align: center;
-  margin: 0 0 32px;
+  margin-top: 0;
+  margin-bottom: 28px;
   line-height: 1.5;
 }
 
@@ -112,6 +121,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
+  margin-bottom: 0;
 }
 
 /* ---------- Option Cards ---------- */
@@ -148,6 +158,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
+  margin-bottom: 4px;
 }
 
 .quiz-option-card .icon-embed-medium svg {
@@ -159,12 +170,14 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--tq-primary);
+  margin-bottom: 2px;
 }
 
 .quiz-option-desc {
   font-size: 13px;
   color: var(--tq-muted);
   line-height: 1.4;
+  margin-bottom: 0;
 }
 
 /* ---------- Navigation ---------- */
@@ -172,7 +185,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 36px;
+  margin-top: 32px;
+  margin-bottom: 0;
   gap: 12px;
 }
 
@@ -217,11 +231,27 @@
   border-color: var(--tq-hover);
 }
 
+/* ---------- Results Section ---------- */
+.quiz-step[data-step="results"] h2 {
+  color: var(--tq-primary);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.quiz-step[data-step="results"] > p {
+  text-align: center;
+  color: var(--tq-muted);
+  margin-top: 0;
+  margin-bottom: 32px;
+}
+
 /* ---------- Results Grid ---------- */
 .quiz-results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
+  margin-bottom: 0;
 }
 
 /* ---------- Result Cards ---------- */
@@ -247,6 +277,7 @@
   object-fit: cover;
   display: block;
   background: var(--tq-bg);
+  margin-bottom: 0;
 }
 
 .quiz-result-content {
@@ -308,7 +339,8 @@
 
 .quiz-no-results p {
   color: var(--tq-muted);
-  margin: 0 0 24px;
+  margin-top: 0;
+  margin-bottom: 24px;
   line-height: 1.5;
 }
 
@@ -333,10 +365,14 @@ button[data-quiz="restart"]:hover {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
-  #treatment-quiz { padding: 28px 16px; }
-  .quiz-question { font-size: 22px; }
+  #treatment-quiz { padding: 0 16px 20px; }
+  .quiz-step h3,
+  .quiz-question { font-size: 22px; margin-bottom: 8px; }
+  .quiz-step > p,
+  .quiz-subtitle { margin-bottom: 20px; }
   .quiz-options-grid { grid-template-columns: 1fr; }
   .quiz-results-grid { grid-template-columns: 1fr; }
+  .quiz-nav-row { margin-top: 24px; }
 }
 
 @media (max-width: 480px) {

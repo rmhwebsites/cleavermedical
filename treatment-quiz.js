@@ -307,6 +307,8 @@
       var concerns = STEP_OPTIONS.concern[value] || [];
       populateGrid('concern', concerns);
       populateGrid('secondary-concerns', concerns);
+      /* Track concern count so we can skip secondary if too few */
+      state._concernCount = concerns.length;
     }
 
     /* Auto-advance after selection (slight delay for visual feedback) */
@@ -320,6 +322,11 @@
 
     if (state.step < 10) {
       state.step++;
+      /* Skip secondary concerns if only 2 or fewer options */
+      if (state.step === 3 && (state._concernCount || 0) <= 2) {
+        state.answers['secondary-concerns'] = [];
+        state.step++;
+      }
       updateUI();
     } else {
       showResults();
@@ -329,6 +336,10 @@
   function goBack() {
     if (state.step > 1) {
       state.step--;
+      /* Skip secondary concerns going back too if it was skipped */
+      if (state.step === 3 && (state._concernCount || 0) <= 2) {
+        state.step--;
+      }
       updateUI();
     }
   }
